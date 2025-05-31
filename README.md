@@ -1,24 +1,7 @@
 # git-subdex
 
 **Submodule Indexing and Delivery Exchange**
-
 ---
-
-### OBINexus
-
-**obinexus · biz**
-35 followers · 39 following
-📍 United Kingdom
-🕓 04:22 (UTC -12:00)
-📧 [support@obinexus.org](mailto:support@obinexus.org)
-🌐 [https://www.obinexus.org](https://www.obinexus.org)
-🐙 [https://github.com/obnexus](https://github.com/obnexus)
-🛒 [https://payhip.com/obinexus](https://payhip.com/obinexus)
-🦊 [https://gitlab.com/obinexus](https://gitlab.com/obinexus)
-✍🏽 [https://medium.com/@obinexus](https://medium.com/@obinexus)
-
----
-
 ## About
 
 `git-subdex` is a **Submodule Indexing and Delivery Exchange** tool developed by OBINexus.
@@ -62,7 +45,3 @@ This creates confusion, duplication, outdated references, and broken links acros
 By using a **YAML-based index (`index.subdex.yml`)**, recursive `git submodule` workflows, and hook-based triggers, `git-subdex` creates a reproducible, organized, and verifiable document system.
 
 This ensures that every `.md`, `.html`, `.pdf`, or `.js` file lives in context, with traceability and structure across project boundaries.
-
----
-
-🏆 **Achievement: Pull Shark**
