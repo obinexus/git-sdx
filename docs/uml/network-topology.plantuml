@@ -1,0 +1,72 @@
+@startuml git-sdx-network-topology
+
+!theme plain
+skinparam componentStyle rectangle
+skinparam nodeStyle rectangle
+
+title git-sdx Network Topology Architecture - Aegis Project
+
+package "Distributed Repository Network" {
+    
+    node "doc-service-node" as DocNode {
+        [DocServer] as DocSrv
+        [.subdex/cache/] as DocCache
+        [Git Hooks] as DocHooks
+        
+        note right of DocSrv
+            Type: server
+            Artifacts: *.md, *.pdf, *.html
+            Auth: JWT | SSH
+            Status: active
+        end note
+    }
+    
+    node "test-client-node" as TestNode {
+        [TestClient] as TestSrv
+        [.subdex/cache/] as TestCache
+        [Git Hooks] as TestHooks
+        
+        note right of TestSrv
+            Type: client
+            Dependencies: doc-service
+            Auth: JWT | SSH
+            Status: synchronized
+        end note
+    }
+    
+    cloud "Authentication Layer" as AuthLayer {
+        [JWT Provider]
+        [SSH Key Manager]
+    }
+    
+    cloud "Remote Repository" as RemoteRepo {
+        database "Submodule Registry"
+        database "Artifact Store"
+    }
+    
+    component "Zero Trust Gateway" as ZTG {
+        interface "Identity Verification" as IV
+        interface "Integrity Check" as IC
+        interface "Access Control" as AC
+    }
+}
+
+' Connection flows
+DocSrv --> ZTG : validates
+ZTG --> TestSrv : authenticates
+TestSrv ..> DocSrv : depends_on
+
+' Authentication paths
+DocNode --> AuthLayer : auth_request
+TestNode --> AuthLayer : auth_request
+
+' Cache synchronization
+DocCache <--> TestCache : sync_protocol
+DocCache <--> RemoteRepo : push/pull
+
+' Zero Trust validation
+ZTG --> RemoteRepo : validate_remote
+ZTG --> DocCache : validate_cache
+ZTG --> TestCache : validate_sync
+
+@enduml

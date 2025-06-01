@@ -1,0 +1,65 @@
+@startuml git-sdx-component-view
+
+!theme plain
+skinparam component {
+    Style rectangle
+    BackgroundColor lightblue
+    BorderColor black
+}
+
+title git-sdx Component Architecture - System Design Phase
+
+package "Core git-sdx System" {
+    
+    component "doc-service" as DocService {
+        portin auth_in
+        portout artifacts_out
+        portout cache_out
+    }
+    
+    component "test-client" as TestClient {
+        portin auth_in  
+        portin artifacts_in
+        portout sync_out
+    }
+    
+    component "Zero Trust Validator" as ZTV {
+        portin validation_requests
+        portout validation_results
+    }
+    
+    component "Authentication Manager" as AuthMgr {
+        component "JWT Handler"
+        component "SSH Handler"
+    }
+    
+    component "Cache Manager" as CacheMgr {
+        component "Artifact Marshaller"
+        component "Sync Engine"
+    }
+    
+    database ".subdex/cache/" as LocalCache
+    cloud "Remote Repositories" as Remote
+}
+
+' Component relationships
+DocService --> ZTV : validate_operations
+TestClient --> ZTV : validate_operations
+ZTV --> AuthMgr : verify_credentials
+
+DocService --> CacheMgr : cache_artifacts
+TestClient --> CacheMgr : sync_dependencies
+
+CacheMgr --> LocalCache : store/retrieve
+CacheMgr --> Remote : sync_remote
+
+DocService ..> TestClient : provides_artifacts
+
+note bottom of ZTV
+    Zero Trust Security Model:
+    - All operations validated
+    - No implicit trust
+    - Continuous verification
+end note
+
+@enduml
